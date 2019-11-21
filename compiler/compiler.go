@@ -11,13 +11,13 @@ import (
 	"github.com/docker/docker/pkg/stdcopy"
 )
 
-func CompileAndRun(mountPath string) {
+func CompileAndRun(language string, mountPath string) {
 	imageName := "compiler_machine"
 
 	dockerClient := createDockerClient()
 	backgoundContext := context.Background()
 
-	containerConfig, containerHostConfig := buildConfigs(imageName, mountPath)
+	containerConfig, containerHostConfig := buildConfigs(language, imageName, mountPath)
 
 	createdContainer := createContainer(imageName, dockerClient, containerConfig, containerHostConfig, backgoundContext)
 
@@ -36,11 +36,14 @@ func createDockerClient() client.APIClient {
 	return dockerClient
 }
 
-func buildContainerConfig(imageName string) *container.Config {
+func buildEntryPoint(language string) []string {
+	return []string{"go", "run", "/usercode/script.go", language}
+}
+
+func buildContainerConfig(language string, imageName string) *container.Config {
 	return &container.Config{
-		Image: imageName,
-		Entrypoint: []string{"go",
-			"run", "/usercode/codehandler.go"},
+		Image:      imageName,
+		Entrypoint: buildEntryPoint(language),
 	}
 }
 
@@ -56,8 +59,9 @@ func buildContainerHostConfig(mountPath string) *container.HostConfig {
 	}
 }
 
-func buildConfigs(imageName string, mountPath string) (containerConfig *container.Config, containerHostConfig *container.HostConfig) {
-	containerConfig = buildContainerConfig(imageName)
+func buildConfigs(language string, imageName string, mountPath string) (containerConfig *container.Config,
+	containerHostConfig *container.HostConfig) {
+	containerConfig = buildContainerConfig(language, imageName)
 	containerHostConfig = buildContainerHostConfig(mountPath)
 	return
 }
@@ -90,7 +94,7 @@ func waitForContainerToStopWithTimeout(dockerClient client.APIClient, backgoundC
 }
 
 func printContainerLogs(dockerClient client.APIClient, backgoundContext context.Context, createdContainer container.ContainerCreateCreatedBody) {
-	out, err := dockerClient.ContainerLogs(backgoundContext, createdContainer.ID, types.ContainerLogsOptions{ShowStdout: true})
+	out, err := dockerClient.ContainerLogs(backgoundContext, createdContainer.ID, types.ContainerLogsOptions{ShowStdout: true, ShowStderr: true})
 	if err != nil {
 		panic(err)
 	}

@@ -8,9 +8,9 @@ import (
 	"../utils/fileUtils"
 )
 
-func PrepSandbox(codeData string, inputData string) string {
+func PrepSandbox(language string, codeData string, inputData string) string {
 	mountPoint, payloadSource := createSandboxPayloadMountPoint()
-	writePayloadFiles(mountPoint, payloadSource, codeData, inputData)
+	writePayloadFiles(language, mountPoint, payloadSource, codeData, inputData)
 	return mountPoint
 }
 
@@ -27,8 +27,8 @@ func createSandboxPayloadMountPoint() (mountPoint string, payloadSource string) 
 	return
 }
 
-func writePayloadFiles(mountPoint string, payloadSource string, codeData string, inputData string) {
-	fileUtils.WriteDataToFile(filepath.Join(mountPoint, "codeFile.java"), codeData, 0755)
+func writePayloadFiles(language string, mountPoint string, payloadSource string, codeData string, inputData string) {
+	fileUtils.WriteDataToFile(filepath.Join(mountPoint, "file."+fileUtils.GetExtensionForLanguage(language)), codeData, 0755)
 	fileUtils.WriteDataToFile(filepath.Join(mountPoint, "inputFile"), inputData, 0755)
 
 	fileUtils.CopyFilesInDirectory(payloadSource, mountPoint, 0755)

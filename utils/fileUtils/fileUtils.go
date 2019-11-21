@@ -1,6 +1,7 @@
 package fileUtils
 
 import (
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"math/rand"
@@ -54,4 +55,13 @@ func GetRandomFolderName(length int) string {
 		b[i] = charset[seededRand.Intn(len(charset))]
 	}
 	return string(b)
+}
+
+func GetExtensionForLanguage(language string) string {
+	if language == "java" {
+		return "java"
+	} else if language == "python" {
+		return "py"
+	}
+	panic(errors.New("Unsupported Language"))
 }

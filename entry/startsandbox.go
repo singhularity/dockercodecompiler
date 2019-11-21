@@ -10,17 +10,17 @@ import (
 
 func main() {
 	argLength := len(os.Args)
-	if argLength == 1 {
-		panic(errors.New("No code data supplied"))
-	} else if argLength == 2 {
-		mountAndCompile(os.Args[1], "")
-	} else if len(os.Args) > 2 {
-		mountAndCompile(os.Args[1], os.Args[2])
+	if argLength < 3 {
+		panic(errors.New("Inssuficient arguments to run compiler"))
+	} else if argLength == 3 {
+		mountAndCompile(os.Args[1], os.Args[2], "")
+	} else {
+		mountAndCompile(os.Args[1], os.Args[2], os.Args[3])
 	}
 }
 
-func mountAndCompile(codeData string, inputData string) {
-	mountPath := prepSandbox.PrepSandbox(codeData, inputData)
-	compiler.CompileAndRun(mountPath)
+func mountAndCompile(language string, codeData string, inputData string) {
+	mountPath := prepSandbox.PrepSandbox(language, codeData, inputData)
+	compiler.CompileAndRun(language, mountPath)
 	os.RemoveAll(mountPath)
 }

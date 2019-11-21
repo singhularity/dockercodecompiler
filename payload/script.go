@@ -11,12 +11,39 @@ import (
 )
 
 func main() {
-	compileCode()
-	runCode()
+	language := os.Args[1]
+	if language == "java" {
+		handleJavaCode()
+	} else if language == "python" {
+		handlePythonCode()
+	} else {
+		panic("Unsupported Language")
+	}
 }
 
-func compileCode() {
-	compileCMD := exec.Command("javac", "codeFile.java")
+func handleJavaCode() {
+	compileJavaCode()
+	runJavaCode()
+}
+
+func handlePythonCode() {
+	runPythonCode()
+}
+
+func runPythonCode() {
+	inputContent := getInputFileContents()
+	runCMD := exec.Command("python3", "file.py", inputContent)
+	runCMD.Dir = "/usercode"
+	runOut, runErr := runCMD.CombinedOutput()
+	if runErr != nil {
+		fmt.Printf("**********ERROR**********\n %v\n", string(runOut))
+	} else {
+		fmt.Print(string(runOut))
+	}
+}
+
+func compileJavaCode() {
+	compileCMD := exec.Command("javac", "file.java")
 	compileCMD.Dir = "/usercode"
 	out, err := compileCMD.CombinedOutput()
 	if err != nil {
@@ -25,7 +52,7 @@ func compileCode() {
 	}
 }
 
-func runCode() {
+func runJavaCode() {
 	inputContent := getInputFileContents()
 	mainClassToRun := getMainJavaClass("/usercode")
 	if mainClassToRun != "" {
