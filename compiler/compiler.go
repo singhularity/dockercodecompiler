@@ -11,20 +11,41 @@ import (
 	"github.com/docker/docker/pkg/stdcopy"
 )
 
-func Compile(mountPath string) {
-	ctx := context.Background()
-	cli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
+func CompileAndRun(mountPath string) {
+	imageName := "compiler_machine"
+
+	dockerClient := createDockerClient()
+	backgoundContext := context.Background()
+
+	containerConfig, containerHostConfig := buildConfigs(imageName, mountPath)
+
+	createdContainer := createContainer(imageName, dockerClient, containerConfig, containerHostConfig, backgoundContext)
+
+	startContainer(dockerClient, backgoundContext, createdContainer)
+
+	waitForContainerToStopWithTimeout(dockerClient, backgoundContext, createdContainer)
+
+	printContainerLogs(dockerClient, backgoundContext, createdContainer)
+}
+
+func createDockerClient() client.APIClient {
+	dockerClient, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
 	if err != nil {
 		panic(err)
 	}
+	return dockerClient
+}
 
-	imageName := "compiler_machine"
-
-	resp, err := cli.ContainerCreate(ctx, &container.Config{
+func buildContainerConfig(imageName string) *container.Config {
+	return &container.Config{
 		Image: imageName,
 		Entrypoint: []string{"go",
-			"run", "/usercode/script.go"},
-	}, &container.HostConfig{
+			"run", "/usercode/codehandler.go"},
+	}
+}
+
+func buildContainerHostConfig(mountPath string) *container.HostConfig {
+	return &container.HostConfig{
 		Mounts: []mount.Mount{
 			{
 				Type:   mount.TypeBind,
@@ -32,16 +53,33 @@ func Compile(mountPath string) {
 				Target: "/usercode",
 			},
 		},
-	}, nil, "")
+	}
+}
+
+func buildConfigs(imageName string, mountPath string) (containerConfig *container.Config, containerHostConfig *container.HostConfig) {
+	containerConfig = buildContainerConfig(imageName)
+	containerHostConfig = buildContainerHostConfig(mountPath)
+	return
+}
+
+func createContainer(imageName string, dockerClient client.APIClient, containerConfig *container.Config,
+	containerHostConfig *container.HostConfig, backgoundContext context.Context) container.ContainerCreateCreatedBody {
+	createdContainer, err := dockerClient.ContainerCreate(backgoundContext, containerConfig, containerHostConfig, nil, "")
 	if err != nil {
 		panic(err)
 	}
 
-	if err := cli.ContainerStart(ctx, resp.ID, types.ContainerStartOptions{}); err != nil {
+	return createdContainer
+}
+
+func startContainer(dockerClient client.APIClient, backgoundContext context.Context, createdContainer container.ContainerCreateCreatedBody) {
+	if err := dockerClient.ContainerStart(backgoundContext, createdContainer.ID, types.ContainerStartOptions{}); err != nil {
 		panic(err)
 	}
+}
 
-	statusCh, errCh := cli.ContainerWait(ctx, resp.ID, container.WaitConditionNotRunning)
+func waitForContainerToStopWithTimeout(dockerClient client.APIClient, backgoundContext context.Context, createdContainer container.ContainerCreateCreatedBody) {
+	statusCh, errCh := dockerClient.ContainerWait(backgoundContext, createdContainer.ID, container.WaitConditionNotRunning)
 	select {
 	case err := <-errCh:
 		if err != nil {
@@ -49,8 +87,10 @@ func Compile(mountPath string) {
 		}
 	case <-statusCh:
 	}
+}
 
-	out, err := cli.ContainerLogs(ctx, resp.ID, types.ContainerLogsOptions{ShowStdout: true})
+func printContainerLogs(dockerClient client.APIClient, backgoundContext context.Context, createdContainer container.ContainerCreateCreatedBody) {
+	out, err := dockerClient.ContainerLogs(backgoundContext, createdContainer.ID, types.ContainerLogsOptions{ShowStdout: true})
 	if err != nil {
 		panic(err)
 	}

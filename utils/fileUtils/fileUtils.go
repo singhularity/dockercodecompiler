@@ -3,9 +3,17 @@ package fileUtils
 import (
 	"fmt"
 	"io/ioutil"
+	"math/rand"
 	"os"
 	"path/filepath"
+	"time"
 )
+
+const charset = "abcdefghijklmnopqrstuvwxyz" +
+	"ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+
+var seededRand *rand.Rand = rand.New(
+	rand.NewSource(time.Now().UnixNano()))
 
 func CopyFilesInDirectory(srcFolder string, destFolder string, mode os.FileMode) {
 
@@ -38,4 +46,12 @@ func WriteDataToFile(path string, data string, mode os.FileMode) bool {
 		return false
 	}
 	return true
+}
+
+func GetRandomFolderName(length int) string {
+	b := make([]byte, length)
+	for i := range b {
+		b[i] = charset[seededRand.Intn(len(charset))]
+	}
+	return string(b)
 }

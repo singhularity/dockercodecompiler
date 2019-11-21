@@ -2,17 +2,16 @@ package main
 
 import (
 	"errors"
-	"fmt"
 	"os"
 
 	"../compiler"
-	"../prep"
+	"../prepSandbox"
 )
 
 func main() {
 	argLength := len(os.Args)
 	if argLength == 1 {
-		fmt.Print(errors.New("No code data to process"))
+		panic(errors.New("No code data supplied"))
 	} else if argLength == 2 {
 		mountAndCompile(os.Args[1], "")
 	} else if len(os.Args) > 2 {
@@ -21,7 +20,7 @@ func main() {
 }
 
 func mountAndCompile(codeData string, inputData string) {
-	mountPath := prep.Prepcode(codeData, inputData)
-	compiler.Compile(mountPath)
+	mountPath := prepSandbox.PrepSandbox(codeData, inputData)
+	compiler.CompileAndRun(mountPath)
 	os.RemoveAll(mountPath)
 }
