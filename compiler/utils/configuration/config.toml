@@ -4,7 +4,7 @@ imageName = "compiler_machine"
 mountPoint = "/usercode"
 sandBoxLocation = "sandbox"
 payloadLocation = "payload"
-tempFileName = "temp"
+tempFileName = "generated"
 codeFilename = "Solution"
 inputFileName = "inputFile"
 [languageExtensions]

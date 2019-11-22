@@ -4,8 +4,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"dockercodecompiler/utils/configuration"
-	"dockercodecompiler/utils/fileUtils"
+	"dockercodecompiler/compiler/utils/configuration"
+	"dockercodecompiler/compiler/utils/fileUtils"
 )
 
 func PrepSandbox(language string, codeData string, inputData string) string {
@@ -16,7 +16,7 @@ func PrepSandbox(language string, codeData string, inputData string) string {
 }
 
 func createSandboxPayloadMountPoint(appConfig configuration.AppConfiguration) (mountPoint string, payloadSource string) {
-	sandBoxLocation := filepath.Join(fileUtils.GetCWD(), appConfig.SandBoxLocation)
+	sandBoxLocation := filepath.Join(fileUtils.GetMainDir(), appConfig.SandBoxLocation)
 	mountPoint = filepath.Join(sandBoxLocation, appConfig.TempFileName, fileUtils.GetRandomFolderName(8))
 	payloadSource = filepath.Join(sandBoxLocation, payloadSource)
 	os.Mkdir(mountPoint, 0755)

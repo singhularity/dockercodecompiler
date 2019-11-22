@@ -10,10 +10,10 @@ import (
 	"github.com/docker/docker/client"
 	"github.com/docker/docker/pkg/stdcopy"
 
-	"dockercodecompiler/utils/configuration"
+	"dockercodecompiler/compiler/utils/configuration"
 )
 
-func CompileAndRun(language string, mountPath string) {
+func CompileAndRun(language string, mountPath string) string {
 	dockerClient := createDockerClient()
 	backgoundContext := context.Background()
 
@@ -25,7 +25,7 @@ func CompileAndRun(language string, mountPath string) {
 
 	waitForContainerToStopWithTimeout(dockerClient, backgoundContext, createdContainer)
 
-	printContainerLogs(dockerClient, backgoundContext, createdContainer)
+	return getContainerLogs(dockerClient, backgoundContext, createdContainer)
 }
 
 func createDockerClient() client.APIClient {
@@ -92,11 +92,12 @@ func waitForContainerToStopWithTimeout(dockerClient client.APIClient, backgoundC
 	}
 }
 
-func printContainerLogs(dockerClient client.APIClient, backgoundContext context.Context, createdContainer container.ContainerCreateCreatedBody) {
+func getContainerLogs(dockerClient client.APIClient, backgoundContext context.Context, createdContainer container.ContainerCreateCreatedBody) string {
 	out, err := dockerClient.ContainerLogs(backgoundContext, createdContainer.ID, types.ContainerLogsOptions{ShowStdout: true, ShowStderr: true})
 	if err != nil {
 		panic(err)
 	}
 
-	stdcopy.StdCopy(os.Stdout, os.Stderr, out)
+	written, _ := stdcopy.StdCopy(os.Stdout, os.Stderr, out)
+	return string(written)
 }

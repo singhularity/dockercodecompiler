@@ -1,7 +1,7 @@
 package configuration
 
 import (
-	"dockercodecompiler/utils/fileUtils"
+	"dockercodecompiler/compiler/utils/fileUtils"
 	"fmt"
 	"path/filepath"
 
