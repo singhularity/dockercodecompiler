@@ -3,7 +3,6 @@ package main
 import (
 	"errors"
 	"os"
-	"path/filepath"
 
 	"dockercodecompiler/dockerCompiler"
 	"dockercodecompiler/sandbox/sandBoxPrepper"
@@ -23,12 +22,7 @@ func main() {
 }
 
 func mountAndCompile(language string, codeData string, inputData string) {
-	currentDir, err := os.Getwd()
-	if err != nil {
-		panic(err)
-	}
-	sandBoxLocation := filepath.Join(currentDir, "sandbox")
-	mountPath := sandBoxPrepper.PrepSandbox(sandBoxLocation, language, codeData, inputData)
+	mountPath := sandBoxPrepper.PrepSandbox(language, codeData, inputData)
 	dockerCompiler.CompileAndRun(language, mountPath)
 	os.RemoveAll(mountPath)
 }

@@ -9,17 +9,17 @@ import (
 	"github.com/docker/docker/api/types/mount"
 	"github.com/docker/docker/client"
 	"github.com/docker/docker/pkg/stdcopy"
+
+	"dockercodecompiler/utils/configuration"
 )
 
 func CompileAndRun(language string, mountPath string) {
-	imageName := "compiler_machine"
-
 	dockerClient := createDockerClient()
 	backgoundContext := context.Background()
 
-	containerConfig, containerHostConfig := buildConfigs(language, imageName, mountPath)
+	containerConfig, containerHostConfig := buildConfigs(language, mountPath)
 
-	createdContainer := createContainer(imageName, dockerClient, containerConfig, containerHostConfig, backgoundContext)
+	createdContainer := createContainer(dockerClient, containerConfig, containerHostConfig, backgoundContext)
 
 	startContainer(dockerClient, backgoundContext, createdContainer)
 
@@ -36,37 +36,34 @@ func createDockerClient() client.APIClient {
 	return dockerClient
 }
 
-func buildEntryPoint(language string) []string {
-	return []string{"go", "run", "/usercode/codeRunner.go", language}
-}
-
-func buildContainerConfig(language string, imageName string) *container.Config {
+func buildContainerConfig(language string, appConfig configuration.AppConfiguration) *container.Config {
 	return &container.Config{
-		Image:      imageName,
-		Entrypoint: buildEntryPoint(language),
+		Image:      appConfig.ImageName,
+		Entrypoint: append(appConfig.SandBoxRunParams, language),
 	}
 }
 
-func buildContainerHostConfig(mountPath string) *container.HostConfig {
+func buildContainerHostConfig(mountPath string, appConfig configuration.AppConfiguration) *container.HostConfig {
 	return &container.HostConfig{
 		Mounts: []mount.Mount{
 			{
 				Type:   mount.TypeBind,
 				Source: mountPath,
-				Target: "/usercode",
+				Target: appConfig.MountPoint,
 			},
 		},
 	}
 }
 
-func buildConfigs(language string, imageName string, mountPath string) (containerConfig *container.Config,
+func buildConfigs(language string, mountPath string) (containerConfig *container.Config,
 	containerHostConfig *container.HostConfig) {
-	containerConfig = buildContainerConfig(language, imageName)
-	containerHostConfig = buildContainerHostConfig(mountPath)
+	appConfig := configuration.GetConfig()
+	containerConfig = buildContainerConfig(language, appConfig)
+	containerHostConfig = buildContainerHostConfig(mountPath, appConfig)
 	return
 }
 
-func createContainer(imageName string, dockerClient client.APIClient, containerConfig *container.Config,
+func createContainer(dockerClient client.APIClient, containerConfig *container.Config,
 	containerHostConfig *container.HostConfig, backgoundContext context.Context) container.ContainerCreateCreatedBody {
 	createdContainer, err := dockerClient.ContainerCreate(backgoundContext, containerConfig, containerHostConfig, nil, "")
 	if err != nil {

@@ -1,7 +1,6 @@
 package fileUtils
 
 import (
-	"errors"
 	"fmt"
 	"io/ioutil"
 	"math/rand"
@@ -57,11 +56,15 @@ func GetRandomFolderName(length int) string {
 	return string(b)
 }
 
-func GetExtensionForLanguage(language string) string {
-	if language == "java" {
-		return "java"
-	} else if language == "python" {
-		return "py"
+func GetConfigLocation() string {
+	cwd := GetCWD()
+	return filepath.Join(cwd, "utils", "configuration")
+}
+
+func GetCWD() string {
+	currentDir, err := os.Getwd()
+	if err != nil {
+		panic(err)
 	}
-	panic(errors.New("Unsupported Language"))
+	return currentDir
 }
