@@ -9,7 +9,7 @@ import (
 
 func compile(w http.ResponseWriter, req *http.Request) {
 	runOutput := compiler.Compile([]string{"", "python3", "print('hi)", "hello"})
-	fmt.Fprintf(w, runOutput)
+	fmt.Fprint(w, runOutput)
 }
 
 func Serve() {

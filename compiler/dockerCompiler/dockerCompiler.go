@@ -95,7 +95,7 @@ func waitForContainerToStopWithTimeout(dockerClient client.APIClient, backgoundC
 func getContainerLogs(dockerClient client.APIClient, backgoundContext context.Context, createdContainer container.ContainerCreateCreatedBody) string {
 	containerLogs, err := dockerClient.ContainerLogs(backgoundContext, createdContainer.ID, types.ContainerLogsOptions{ShowStdout: true, ShowStderr: true})
 	if err != nil {
-		panic(err)
+		return err.Error()
 	}
 
 	return parseDockerLogsToString(containerLogs)
