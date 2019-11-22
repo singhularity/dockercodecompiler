@@ -18,7 +18,12 @@ type AppConfiguration struct {
 	TempFileName       string
 	CodeFileName       string
 	InputFileName      string
-	LanguageExtensions map[string]string
+	LanguageExtensions map[string]LanguageSpecs
+}
+
+type LanguageSpecs struct {
+	Extension   string
+	ExecCommand string
 }
 
 var config AppConfiguration

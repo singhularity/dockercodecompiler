@@ -37,9 +37,11 @@ func createDockerClient() client.APIClient {
 }
 
 func buildContainerConfig(language string, appConfig configuration.AppConfiguration) *container.Config {
+	languageSpecs := appConfig.LanguageExtensions[language]
 	return &container.Config{
-		Image:      appConfig.ImageName,
-		Entrypoint: append(appConfig.SandBoxRunParams, language),
+		Image: appConfig.ImageName,
+		Entrypoint: append(appConfig.SandBoxRunParams, languageSpecs.ExecCommand,
+			appConfig.CodeFileName+languageSpecs.Extension, appConfig.MountPoint, appConfig.InputFileName),
 	}
 }
 

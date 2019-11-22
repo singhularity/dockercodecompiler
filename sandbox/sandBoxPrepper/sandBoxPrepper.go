@@ -24,8 +24,10 @@ func createSandboxPayloadMountPoint(appConfig configuration.AppConfiguration) (m
 	return
 }
 
-func writePayloadFiles(appConfig configuration.AppConfiguration, language string, mountPoint string, payloadSource string, codeData string, inputData string) {
-	codeFileName := appConfig.CodeFileName + appConfig.LanguageExtensions[language]
+func writePayloadFiles(appConfig configuration.AppConfiguration,
+	language string, mountPoint string, payloadSource string,
+	codeData string, inputData string) (codeFileName string) {
+	codeFileName = appConfig.CodeFileName + appConfig.LanguageExtensions[language].Extension
 	codeFileWithPath := filepath.Join(mountPoint, codeFileName)
 	inputFileWithPath := filepath.Join(mountPoint, appConfig.InputFileName)
 
@@ -33,4 +35,5 @@ func writePayloadFiles(appConfig configuration.AppConfiguration, language string
 	fileUtils.WriteDataToFile(inputFileWithPath, inputData, 0755)
 
 	fileUtils.CopyFilesInDirectory(payloadSource, mountPoint, 0755)
+	return
 }

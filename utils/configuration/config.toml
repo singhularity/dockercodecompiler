@@ -8,5 +8,6 @@ tempFileName = "temp"
 codeFilename = "file"
 inputFileName = "inputFile"
 [languageExtensions]
-java = ".java"
-python = ".py"
+java = { extension = ".java", execCommand = "java" }
+python = { extension = ".py", execCommand = "python" }
+python3 = { extension = ".py", execCommand = "python3" }
