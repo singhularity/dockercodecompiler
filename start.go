@@ -1,8 +1,8 @@
 package main
 
 import (
-	"dockercodecompiler/compiler"
-	"dockercodecompiler/server"
+	"github.com/dockercodecompiler/compiler"
+	"github.com/dockercodecompiler/server"
 	"fmt"
 	"os"
 )

@@ -1,8 +1,8 @@
 package configuration
 
 import (
-	"dockercodecompiler/compiler/utils/fileUtils"
 	"fmt"
+	"github.com/dockercodecompiler/compiler/utils/fileUtils"
 	"path/filepath"
 
 	"github.com/BurntSushi/toml"

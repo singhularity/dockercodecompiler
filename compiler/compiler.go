@@ -3,8 +3,8 @@ package compiler
 import (
 	"os"
 
-	"dockercodecompiler/compiler/dockerCompiler"
-	"dockercodecompiler/compiler/sandbox/sandBoxPrepper"
+	"github.com/dockercodecompiler/compiler/dockerCompiler"
+	"github.com/dockercodecompiler/compiler/sandbox/sandBoxPrepper"
 )
 
 func Compile(params []string) string {

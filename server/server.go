@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"dockercodecompiler/compiler"
+	"github.com/dockercodecompiler/compiler"
 )
 
 func compile(w http.ResponseWriter, req *http.Request) {

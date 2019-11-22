@@ -10,7 +10,7 @@ import (
 	"github.com/docker/docker/api/types/mount"
 	"github.com/docker/docker/client"
 
-	"dockercodecompiler/compiler/utils/configuration"
+	"github.com/dockercodecompiler/compiler/utils/configuration"
 )
 
 func CompileAndRun(language string, mountPath string) string {
