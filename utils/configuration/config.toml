@@ -5,7 +5,7 @@ mountPoint = "/usercode"
 sandBoxLocation = "sandbox"
 payloadLocation = "payload"
 tempFileName = "temp"
-codeFilename = "file"
+codeFilename = "Solution"
 inputFileName = "inputFile"
 [languageExtensions]
 java = { extension = ".java", execCommand = "java" }
