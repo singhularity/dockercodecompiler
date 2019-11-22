@@ -5,7 +5,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"../utils/fileUtils"
+	"dockercodecompiler/utils/fileUtils"
 )
 
 func PrepSandbox(language string, codeData string, inputData string) string {

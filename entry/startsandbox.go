@@ -4,8 +4,8 @@ import (
 	"errors"
 	"os"
 
-	"../compiler"
-	"../prepSandbox"
+	"dockercodecompiler/compiler"
+	"dockercodecompiler/prepSandbox"
 )
 
 func main() {
