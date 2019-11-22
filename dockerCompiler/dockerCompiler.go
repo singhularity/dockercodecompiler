@@ -1,4 +1,4 @@
-package compiler
+package dockerCompiler
 
 import (
 	"context"
@@ -37,7 +37,7 @@ func createDockerClient() client.APIClient {
 }
 
 func buildEntryPoint(language string) []string {
-	return []string{"go", "run", "/usercode/script.go", language}
+	return []string{"go", "run", "/usercode/codeRunner.go", language}
 }
 
 func buildContainerConfig(language string, imageName string) *container.Config {
