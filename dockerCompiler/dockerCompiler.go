@@ -36,6 +36,14 @@ func createDockerClient() client.APIClient {
 	return dockerClient
 }
 
+func buildConfigs(language string, mountPath string) (containerConfig *container.Config,
+	containerHostConfig *container.HostConfig) {
+	appConfig := configuration.GetConfig()
+	containerConfig = buildContainerConfig(language, appConfig)
+	containerHostConfig = buildContainerHostConfig(mountPath, appConfig)
+	return
+}
+
 func buildContainerConfig(language string, appConfig configuration.AppConfiguration) *container.Config {
 	languageSpecs := appConfig.LanguageExtensions[language]
 	return &container.Config{
@@ -55,14 +63,6 @@ func buildContainerHostConfig(mountPath string, appConfig configuration.AppConfi
 			},
 		},
 	}
-}
-
-func buildConfigs(language string, mountPath string) (containerConfig *container.Config,
-	containerHostConfig *container.HostConfig) {
-	appConfig := configuration.GetConfig()
-	containerConfig = buildContainerConfig(language, appConfig)
-	containerHostConfig = buildContainerHostConfig(mountPath, appConfig)
-	return
 }
 
 func createContainer(dockerClient client.APIClient, containerConfig *container.Config,
