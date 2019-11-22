@@ -8,7 +8,7 @@ import (
 )
 
 func compile(w http.ResponseWriter, req *http.Request) {
-	runOutput := compiler.Compile([]string{"", "python3", "print('hi)", "hello"})
+	runOutput := compiler.Compile([]string{"", "python3", "print('hi')", "hello"})
 	fmt.Fprint(w, runOutput)
 }
 
