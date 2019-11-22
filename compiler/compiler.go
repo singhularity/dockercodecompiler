@@ -4,7 +4,7 @@ import (
 	"os"
 
 	"github.com/dockercodecompiler/compiler/dockerCompiler"
-	"github.com/dockercodecompiler/compiler/sandbox/sandBoxPrepper"
+	"github.com/dockercodecompiler/compiler/sandbox/staging"
 )
 
 func Compile(params []string) string {
@@ -21,7 +21,7 @@ func Compile(params []string) string {
 }
 
 func mountAndCompile(language string, codeData string, inputData string) string {
-	mountPath := sandBoxPrepper.PrepSandbox(language, codeData, inputData)
+	mountPath := staging.PrepSandbox(language, codeData, inputData)
 	runOutput := dockerCompiler.CompileAndRun(language, mountPath)
 	os.RemoveAll(mountPath)
 	return runOutput

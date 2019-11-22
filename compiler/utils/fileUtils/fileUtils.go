@@ -58,7 +58,7 @@ func GetRandomFolderName(length int) string {
 
 func GetConfigLocation() string {
 	mainDir := GetMainDir()
-	return filepath.Join(mainDir, "utils", "configuration")
+	return filepath.Join(mainDir, "configuration")
 }
 
 func GetMainDir() string {

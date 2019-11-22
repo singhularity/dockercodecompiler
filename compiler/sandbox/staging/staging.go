@@ -1,10 +1,10 @@
-package sandBoxPrepper
+package staging
 
 import (
 	"os"
 	"path/filepath"
 
-	"github.com/dockercodecompiler/compiler/utils/configuration"
+	"github.com/dockercodecompiler/compiler/configuration"
 	"github.com/dockercodecompiler/compiler/utils/fileUtils"
 )
 
