@@ -16,6 +16,7 @@ jobs:
 
       - name: Get dependencies
         run: |
+          git config --global url."git@github.com:".insteadOf "https://github.com/"
           go get -v -t -d ./...
           if [ -f Gopkg.toml ]; then
               curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
