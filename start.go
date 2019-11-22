@@ -11,7 +11,7 @@ import (
 func main() {
 	argLength := len(os.Args)
 	if argLength < 3 {
-		panic(errors.New("Inssuficient arguments to run compiler"))
+		panic(errors.New("Insufficient arguments to run compiler"))
 	}
 
 	if argLength == 3 {
