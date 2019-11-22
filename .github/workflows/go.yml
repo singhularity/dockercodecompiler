@@ -23,4 +23,4 @@ jobs:
           fi
 
       - name: Build
-        run: go build -v ./entry/startsandbox.go
+        run: go build -v .
