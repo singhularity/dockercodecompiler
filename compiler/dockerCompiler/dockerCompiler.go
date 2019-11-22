@@ -2,13 +2,13 @@ package dockerCompiler
 
 import (
 	"context"
-	"os"
+	"io"
+	"io/ioutil"
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/api/types/mount"
 	"github.com/docker/docker/client"
-	"github.com/docker/docker/pkg/stdcopy"
 
 	"dockercodecompiler/compiler/utils/configuration"
 )
@@ -93,11 +93,21 @@ func waitForContainerToStopWithTimeout(dockerClient client.APIClient, backgoundC
 }
 
 func getContainerLogs(dockerClient client.APIClient, backgoundContext context.Context, createdContainer container.ContainerCreateCreatedBody) string {
-	out, err := dockerClient.ContainerLogs(backgoundContext, createdContainer.ID, types.ContainerLogsOptions{ShowStdout: true, ShowStderr: true})
+	containerLogs, err := dockerClient.ContainerLogs(backgoundContext, createdContainer.ID, types.ContainerLogsOptions{ShowStdout: true, ShowStderr: true})
 	if err != nil {
 		panic(err)
 	}
 
-	written, _ := stdcopy.StdCopy(os.Stdout, os.Stderr, out)
-	return string(written)
+	return parseDockerLogsToString(containerLogs)
+}
+
+func parseDockerLogsToString(containerLogs io.ReadCloser) string {
+	defer containerLogs.Close()
+
+	//read the first 8 bytes to ignore the HEADER part from docker container logs
+	p := make([]byte, 8)
+	containerLogs.Read(p)
+	content, _ := ioutil.ReadAll(containerLogs)
+
+	return string(content)
 }
