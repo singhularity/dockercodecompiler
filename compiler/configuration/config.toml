@@ -11,3 +11,10 @@ inputFileName = "inputFile"
 java = { extension = ".java", execCommand = "java" }
 python = { extension = ".py", execCommand = "python" }
 python3 = { extension = ".py", execCommand = "python3" }
+ruby = { extension = ".rb", execCommand = "ruby" }
+clojure = { extension = ".clj", execCommand = "clojure" }
+php = { extension = ".php", execCommand = "php" }
+scala = { extension = ".scala", execCommand = "scala" }
+go = { extension = ".go", execCommand = "go" }
+shell = { extension = ".sh", execCommand = "/bin/bash" }
+perl = { extension = ".pl", execCommand = "perl" }
