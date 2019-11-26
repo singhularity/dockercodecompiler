@@ -2,7 +2,6 @@ package server
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/dockercodecompiler/compiler"
@@ -21,7 +20,6 @@ func compile(w http.ResponseWriter, req *http.Request) {
 		err := json.NewDecoder(req.Body).Decode(&compilerParams)
 		if err == nil {
 			runParams := append([]string{""}, compilerParams.Language, compilerParams.Code, compilerParams.Stdin)
-			fmt.Print(runParams)
 			runOutput := compiler.Compile(runParams)
 			w.Write([]byte(runOutput))
 		} else {
