@@ -62,23 +62,35 @@ func getMainJavaClass(srcFolder string) string {
 	for _, info := range files {
 		if filepath.Ext(info.Name()) == ".class" {
 			fileNameWithExtension := filepath.Base(info.Name())
-			return extractMainClassFromClassFile(srcFolder, fileNameWithExtension)
+			className := extractMainClassFromClassFile(srcFolder, fileNameWithExtension)
+			if className == "" {
+				continue
+			} else {
+				return className
+			}
 		}
 	}
 	fmt.Printf("No runnable class files found in %s\n", srcFolder)
 	return ""
 }
 
-func extractMainClassFromClassFile(srcFolder string, fileNameWithExtension string) string {
+func extractMainClassFromClassFile(srcFolder string, fileNameWithExtension string) (className string) {
 	classWithPath := filepath.Join(srcFolder, fileNameWithExtension)
-	javapCommandString := "javap -public " + classWithPath + " | fgrep -q 'public static void main(java.lang.String[])'"
+	javapCommandString := "javap -public " + classWithPath + " | fgrep 'public static void main(java.lang.String[])'"
 	javapCmd := exec.Command("bash", "-c", javapCommandString)
-	_, err := javapCmd.CombinedOutput()
+
+	op, err := javapCmd.CombinedOutput()
+
 	if err != nil {
 		fmt.Printf("Error when trying to find runnable classfile: %s\n", err)
 		return ""
 	}
-	return strings.TrimSuffix(fileNameWithExtension, filepath.Ext(fileNameWithExtension))
+	if string(op) != "" {
+		className = strings.Split(strings.TrimSuffix(fileNameWithExtension, filepath.Ext(fileNameWithExtension)), "$")[0]
+		fmt.Print(className)
+		return
+	}
+	return ""
 }
 
 func getInputFileContents(mountDir string, inputFileName string) string {

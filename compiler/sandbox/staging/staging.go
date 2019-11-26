@@ -6,6 +6,7 @@ import (
 
 	"github.com/dockercodecompiler/compiler/configuration"
 	"github.com/dockercodecompiler/compiler/utils/fileUtils"
+	"github.com/dockercodecompiler/compiler/sandbox/staging/sanitizers"
 )
 
 func PrepSandbox(language string, codeData string, inputData string) string {
@@ -30,7 +31,7 @@ func writePayloadFiles(appConfig configuration.AppConfiguration,
 	codeFileName = appConfig.CodeFileName + appConfig.LanguageExtensions[language].Extension
 	codeFileWithPath := filepath.Join(mountPoint, codeFileName)
 	inputFileWithPath := filepath.Join(mountPoint, appConfig.InputFileName)
-
+	codeData = sanitizers.Sanitize(language, codeData)
 	fileUtils.WriteDataToFile(codeFileWithPath, codeData, 0755)
 	fileUtils.WriteDataToFile(inputFileWithPath, inputData, 0755)
 
