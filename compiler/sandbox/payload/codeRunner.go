@@ -87,7 +87,6 @@ func extractMainClassFromClassFile(srcFolder string, fileNameWithExtension strin
 	}
 	if string(op) != "" {
 		className = strings.Split(strings.TrimSuffix(fileNameWithExtension, filepath.Ext(fileNameWithExtension)), "$")[0]
-		fmt.Print(className)
 		return
 	}
 	return ""
