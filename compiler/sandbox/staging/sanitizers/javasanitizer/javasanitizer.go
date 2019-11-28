@@ -6,7 +6,7 @@ import (
 )
 
 func Sanitize(code string) string {
-	return replacePublicClass(removePackage(code))
+	return escapeQuotes(replacePublicClass(removePackage(code)))
 }
 
 func replacePublicClass(code string) string {
@@ -16,4 +16,8 @@ func replacePublicClass(code string) string {
 func removePackage(code string) string {
 	re := regexp.MustCompile("^package\\s+([a-zA_Z_][\\.\\w]*);")
 	return re.ReplaceAllString(code, "")
+}
+
+func escapeQuotes(code string) string {
+	return strings.Replace(strings.Replace(code, "’", "\\'", -1), "‘", "\\'", -1)
 }
