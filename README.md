@@ -6,7 +6,7 @@ The library can run as a service or for a "single" run
 </p>
 
 <h1>Uses</h1>
-<p>You can use it to run any untrusted code in a sandbox so you don't risk untrusted sources messing up your server contents.
+<p>You can use it to run any code in a sandbox so you don't risk untrusted sources messing up your server contents.
 A good example is an online code compiler application!
 </p>
 
