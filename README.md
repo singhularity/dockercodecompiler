@@ -12,7 +12,6 @@ A good example is an online code compiler application!
 
 <h1>Set Up</h1>
 
-**Checkout code**
 * Install go
 * Checkout code in $GOPATH/src/github.com
 
