@@ -1,3 +1,17 @@
+<h1>About</h1>
+<p>
+The "Docker Code Compiler" can be used to run adhoc code in a "sandboxed" mode.
+Basically, it brings up a temporary docker instance, runs your code and then returns any output/error generated after running the code.
+The library can run as a service or for a "single" run 
+</p>
+
+<h2>Uses</h2>
+<p>You can use it to run any untrusted code in a sandbox so you don't risk untrusted sources messing up your server contents.
+A good example is an online code compiler application!
+</p>
+
+<h1>Set Up<h1></h1>
+
 **Checkout code**
 * Install go
 * Checkout code in $GOPATH/src/github.com
@@ -12,45 +26,51 @@
 If you see errors like "undefined: client.NewClientWithOpts", run the following
 * `go get github.com/docker/docker@master`
 
-**Run as a service OR Local**
+<h1>Usage<h1></h1>
+
+**Can be run in "service" OR "Local" mode**
 
 <b>To run as service</b>
 
-`./start svc`
+    `./start svc`
 
 You can then Post requests to http://localhost:8090/api/compile
 
-Java Example
+* Java Example<br> 
 
-`curl -X POST \
-   http://localhost:8090/api/compile \
-   -d '{
-   "language": "java",
-   "code": "class HelloWorld { public static void main(String[] args) { System.out.println(\"Hello \" + args[0]);}}",
-   "stdin": "World!"
- }'
- `
+    `curl -X POST \
+       http://localhost:8090/api/compile \
+       -d '{
+       "language": "java",
+       "code": "class HelloWorld { public static void main(String[] args) { System.out.println(\"Hello \" + args[0]);}}",
+       "stdin": "World!"
+     }'
+     `
 
-Python Example
+* Python Example
 
-`curl -X POST \
-  http://localhost:8090/api/compile \
-  -d '{
-  "language": "python",
-  "code": "print('\''Hello World!'\'')"
-}'
-`
+    `curl -X POST \
+      http://localhost:8090/api/compile \
+      -d '{
+      "language": "python",
+      "code": "print('\''Hello World!'\'')"
+    }'
+    `
 
-To run stand alone
-* `./start local java "class HelloWorld { public static void main(String[] args) { System.out.println(\"Hello \" + args[0]);}}" world!`
-* `./start local python "print('Hello')"`
+<b>To run single instance</b>
 
-**Supported Languages**
-* Java
-* Python3
-* Python
-* PHP
-* Ruby
-* Scala
-* GoLang
+* Java Example<br> 
+    `./start local java "class HelloWorld { public static void main(String[] args) { System.out.println(\"Hello \" + args[0]);}}" world!`
+* Python Example<br>
+`./start local python "print('Hello')"`
+
+<h1>Supported Languages</h1><br>
+Java<br>
+Python3<br>
+Python<br>
+PHP<br>
+Ruby<br>
+Scala<br>
+GoLang<br>
+
 
