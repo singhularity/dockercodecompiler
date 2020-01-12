@@ -5,7 +5,7 @@ Basically, it brings up a temporary docker instance, runs your code and then ret
 The library can run as a service or for a "single" run 
 </p>
 
-<h2>Uses</h2>
+<h1>Uses</h1>
 <p>You can use it to run any untrusted code in a sandbox so you don't risk untrusted sources messing up your server contents.
 A good example is an online code compiler application!
 </p>
