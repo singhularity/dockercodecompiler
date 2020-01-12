@@ -10,7 +10,7 @@ The library can run as a service or for a "single" run
 A good example is an online code compiler application!
 </p>
 
-<h1>Set Up<h1></h1>
+<h1>Set Up</h1>
 
 **Checkout code**
 * Install go
@@ -26,7 +26,7 @@ A good example is an online code compiler application!
 If you see errors like "undefined: client.NewClientWithOpts", run the following
 * `go get github.com/docker/docker@master`
 
-<h1>Usage<h1></h1>
+<h1>Usage</h1>
 
 **Can be run in "service" OR "Local" mode**
 
