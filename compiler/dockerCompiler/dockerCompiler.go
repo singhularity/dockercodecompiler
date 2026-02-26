@@ -3,9 +3,7 @@ package dockerCompiler
 import (
 	"context"
 	"io"
-	"io/ioutil"
 
-	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/api/types/mount"
 	"github.com/docker/docker/client"
@@ -66,8 +64,8 @@ func buildContainerHostConfig(mountPath string, appConfig configuration.AppConfi
 }
 
 func createContainer(dockerClient client.APIClient, containerConfig *container.Config,
-	containerHostConfig *container.HostConfig, backgoundContext context.Context) container.ContainerCreateCreatedBody {
-	createdContainer, err := dockerClient.ContainerCreate(backgoundContext, containerConfig, containerHostConfig, nil, "")
+	containerHostConfig *container.HostConfig, backgoundContext context.Context) container.CreateResponse {
+	createdContainer, err := dockerClient.ContainerCreate(backgoundContext, containerConfig, containerHostConfig, nil, nil, "")
 	if err != nil {
 		panic(err)
 	}
@@ -75,13 +73,13 @@ func createContainer(dockerClient client.APIClient, containerConfig *container.C
 	return createdContainer
 }
 
-func startContainer(dockerClient client.APIClient, backgoundContext context.Context, createdContainer container.ContainerCreateCreatedBody) {
-	if err := dockerClient.ContainerStart(backgoundContext, createdContainer.ID, types.ContainerStartOptions{}); err != nil {
+func startContainer(dockerClient client.APIClient, backgoundContext context.Context, createdContainer container.CreateResponse) {
+	if err := dockerClient.ContainerStart(backgoundContext, createdContainer.ID, container.StartOptions{}); err != nil {
 		panic(err)
 	}
 }
 
-func waitForContainerToStopWithTimeout(dockerClient client.APIClient, backgoundContext context.Context, createdContainer container.ContainerCreateCreatedBody) {
+func waitForContainerToStopWithTimeout(dockerClient client.APIClient, backgoundContext context.Context, createdContainer container.CreateResponse) {
 	statusCh, errCh := dockerClient.ContainerWait(backgoundContext, createdContainer.ID, container.WaitConditionNotRunning)
 	select {
 	case err := <-errCh:
@@ -92,8 +90,8 @@ func waitForContainerToStopWithTimeout(dockerClient client.APIClient, backgoundC
 	}
 }
 
-func getContainerLogs(dockerClient client.APIClient, backgoundContext context.Context, createdContainer container.ContainerCreateCreatedBody) string {
-	containerLogs, err := dockerClient.ContainerLogs(backgoundContext, createdContainer.ID, types.ContainerLogsOptions{ShowStdout: true, ShowStderr: true})
+func getContainerLogs(dockerClient client.APIClient, backgoundContext context.Context, createdContainer container.CreateResponse) string {
+	containerLogs, err := dockerClient.ContainerLogs(backgoundContext, createdContainer.ID, container.LogsOptions{ShowStdout: true, ShowStderr: true})
 	if err != nil {
 		return err.Error()
 	}
@@ -107,7 +105,7 @@ func parseDockerLogsToString(containerLogs io.ReadCloser) string {
 	//read the first 8 bytes to ignore the HEADER part from docker container logs
 	p := make([]byte, 8)
 	containerLogs.Read(p)
-	content, _ := ioutil.ReadAll(containerLogs)
+	content, _ := io.ReadAll(containerLogs)
 
 	return string(content)
 }

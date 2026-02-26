@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
 	"log"
 	"os"
 	"os/exec"
@@ -54,7 +53,7 @@ func compileJavaCode(mountDir string, codeFileName string) {
 }
 
 func getMainJavaClass(srcFolder string) string {
-	files, err := ioutil.ReadDir(srcFolder)
+	files, err := os.ReadDir(srcFolder)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -95,7 +94,7 @@ func extractMainClassFromClassFile(srcFolder string, fileNameWithExtension strin
 func getInputFileContents(mountDir string, inputFileName string) string {
 	inputFile := filepath.Join(mountDir, inputFileName)
 	if fileExists(inputFile) {
-		content, err := ioutil.ReadFile(inputFile)
+		content, err := os.ReadFile(inputFile)
 		if err != nil {
 			fmt.Print(err)
 		}
